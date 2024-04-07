@@ -1,12 +1,14 @@
 /**
  * DOM SELECTORS
  */
+console.log(document);
 
  const startButton = document.querySelector(".js-start-button");
- // TODO: Add the missing query selectors:
- const statusSpan; // Use querySelector() to get the status element
- const heading; // Use querySelector() to get the heading element
- const padContainer; // Use querySelector() to get the heading element
+ // Here I added the missing query selectors as required in order to select the status, heading and pad container elements:
+
+ const statusSpan = document.querySelector('.statusSpan'); // Use querySelector() to get the status element
+ const heading = document.querySelector("h1"); // I am using querySelector() to get the heading element
+ const padContainer = document.querySelector('.padContainer');  // I'm using querySelector() to get the heading element
 
 /**
  * VARIABLES
@@ -37,13 +39,33 @@ let roundCount = 0; // track the number of rounds that have been played so far
     selector: document.querySelector(".js-pad-red"),
     sound: new Audio("../assets/simon-says-sound-1.mp3"),
   },
-  // TODO: Add the objects for the green, blue, and yellow pads. Use object for the red pad above as an example.
+  //  Adding the objects for the green, blue, and yellow pads.
+  {
+    color: "green",
+    selector: document.querySelector(".js-pad-green"),
+    sound: new Audio("../assets/simon-says-sound-2.mp3"),
+  },
+
+  {
+    color: "blue",
+    selector: document.querySelector(".js-pad-blue"),
+    sound: new Audio("../assets/simon-says-sound-3.mp3"),
+  },
+
+  {
+    color: "yellow",
+    selector: document.querySelector(".js-pad-yellow"),
+    sound: new Audio("../assets/simon-says-sound-4.mp3"),
+  },
 ];
 
 /**
  * EVENT LISTENERS
  */
 
+const startButton = document.querySelector("#startButton");
+
+startButton.addEventListener('click', startButtonHandler); 
 padContainer.addEventListener("click", padHandler);
 // TODO: Add an event listener `startButtonHandler()` to startButton.
 
@@ -66,10 +88,31 @@ padContainer.addEventListener("click", padHandler);
  *
  */
 function startButtonHandler() {
-  // TODO: Write your code here.
+  // Assuming setLevel, playComputerTurn, and other necessary variables and functions are defined elsewhere.
 
+  // 1. Call setLevel() to set the level of the game
+  // Assuming setLevel() has been defined according to previous instructions.
+  const level = setLevel(); // or setLevel(desiredLevel) if you want to pass a specific level
+
+  // 2. Increment the roundCount from 0 to 1
+  let roundCount = 1; // Initialize roundCount to 1 to start the game
+
+  // 3. Hide the start button by adding the `.hidden` class to the start button
+  const startButton = document.getElementById('startButton'); // Replace 'startButton' with the actual ID of your start button
+  startButton.classList.add('hidden');
+
+  // 4. Unhide the status element, which displays the status messages, by removing the `.hidden` class
+  const statusSpan = document.getElementById('statusSpan'); // Replace 'statusSpan' with the actual ID of your status element
+  statusSpan.classList.remove('hidden');
+
+  // 5. Call `playComputerTurn()` to start the game with the computer going first.
+  playComputerTurn();
+
+  // Return the startButton and statusSpan elements if needed elsewhere
   return { startButton, statusSpan };
 }
+
+  
 
 /**
  * Called when one of the pads is clicked.
@@ -122,7 +165,30 @@ function padHandler(event) {
  *
  */
 function setLevel(level = 1) {
-  // TODO: Write your code here.
+  // This is where I implemented the setLevel function given a 'level' parameter.
+  function setLevel(level = 1) {
+    const levelToRoundsMap = {
+      1: 8,
+      2: 14,
+      3: 20,
+      4: 31
+    };
+  
+    if (levelToRoundsMap.hasOwnProperty(level)) {
+      return levelToRoundsMap[level];
+    } else {
+      return "Please enter level 1, 2, 3, or 4";
+    }
+  }
+  
+  // Example usage:
+  console.log(setLevel());    //> returns 8
+  console.log(setLevel(1));   //> returns 8
+  console.log(setLevel(2));   //> returns 14
+  console.log(setLevel(3));   //> returns 20
+  console.log(setLevel(4));   //> returns 31
+  console.log(setLevel(5));   //> returns "Please enter level 1, 2, 3, or 4"
+  console.log(setLevel(8));   //> returns "Please enter level 1, 2, 3, or 4"
 }
 
 /**
