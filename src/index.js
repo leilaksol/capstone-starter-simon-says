@@ -4,7 +4,7 @@
 
  
  // TODO: Add the missing query selectors:
- const startButton = document.querySelector(".js-start-button");
+const startButton = document.querySelector(".js-start-button");
 const statusSpan = document.querySelector(".js-status"); // Selects the status element
 const heading = document.querySelector(".js-heading"); // Selects the heading element
 const padContainer = document.querySelector(".js-pad-container"); // Selects the pad container element
@@ -14,7 +14,7 @@ const padContainer = document.querySelector(".js-pad-container"); // Selects the
  * VARIABLES
  */
 let computerSequence = []; // track the computer-generated sequence of pad presses
-let playerSequence = []; // track the player-generated sequence of pad presses
+let humanSequence = []; // track the player-generated sequence of pad presses
 let maxRoundCount = 0; // the max number of rounds, varies with the chosen level
 let roundCount = 0; // track the number of rounds that have been played so far
 
@@ -119,7 +119,18 @@ function padHandler(event) {
   const { color } = event.target.dataset;
   if (!color) return;
 
-  // TODO: Write your code here.
+  // Use the .find() method to retrieve the pad from the pads array
+  const pad = pads.find(pad => pad.color === color);
+
+  // Play the sound for the pad
+  if (pad && pad.sound) {
+    pad.sound.play();
+  }
+
+  // Call checkPress(color) to verify the player's selection
+  checkPress(color);
+
+  // Return the color variable as the output
   return color;
 }
 
@@ -138,21 +149,7 @@ function setLevel(level = 1) {
   }
 }
 
-/**
- * Returns a randomly selected item from a given array.
- *
- * 1. `Math.random()` returns a floating-point, pseudo-random number in the range 0 to less than 1
- *
- * 2. Multiplying the value from `Math.random()` with the length of the array ensures that the range
- * of the random number is less than the length of the array. So if the length of the array is 4,
- * the random number returned will be between 0 and 4 (exclusive)
- *
- * 3. Math.floor() rounds the numbers down to the largest integer less than or equal the given value
- *
- * Example:
- * getRandomItem([1, 2, 3, 4]) //> returns 2
- * getRandomItem([1, 2, 3, 4]) //> returns 1
- */
+
 function getRandomItem(collection) {
    if (collection.length === 0) return null;
    const randomIndex = Math.floor(Math.random() * collection.length);
@@ -170,18 +167,7 @@ function setText(element, text) {
   return element;
 }
 
-/**
- * Activates a pad of a given color by playing its sound and light
- *
- * 1. Use the `.find()` method to retrieve the pad from the `pads` array and store it in
- * a variable called `pad`
- *
- * 2. Add the `"activated"` class to the selected pad
- *
- * 3. Play the sound associated with the pad
- *
- * 4. After 500ms, remove the `"activated"` class from the pad
- */
+
 
 function activatePad(color) {
   // Use the .find() method to retrieve the pad from the pads array
@@ -201,19 +187,6 @@ function activatePad(color) {
   }
 }
 
-/**
- * Activates a sequence of colors passed as an array to the function
- *
- * 1. Iterate over the `sequence` array using `.forEach()`
- *
- * 2. For each element in `sequence`, use `setTimeout()` to call `activatePad()`, adding
- * a delay (in milliseconds) between each pad press. Without it, the pads in the sequence
- * will be activated all at once
- *
- * 3. The delay between each pad press, passed as a second argument to `setTimeout()`, needs
- * to change on each iteration. The first button in the sequence is activated after 600ms,
- * the next one after 1200ms (600ms after the first), the third one after 1800ms, and so on.
- */
 
 function activatePads(sequence) {
   sequence.forEach((color, index) => {
@@ -231,42 +204,20 @@ function activatePads(sequence) {
     activatePad("yellow");
 }
 
-/**
- * Allows the computer to play its turn.
- *
- * 1. Add the `"unclickable"` class to `padContainer` to prevent the user from pressing
- * any of the pads
- *
- * 2. The status should display a message that says "The computer's turn..."
- *
- * 3. The heading should display a message that lets the player know how many rounds are left
- * (e.g., "`Round ${roundCount} of ${maxRoundCount}`")
- *
- * 4. Push a randomly selected color into the `computerSequence` array
- *
- * 5. Call `activatePads(computerSequence)` to light up each pad according to order defined in
- * `computerSequence`
- *
- * 6. The playHumanTurn() function needs to be called after the computer’s turn is over, so
- * we need to add a delay and calculate when the computer will be done with the sequence of
- * pad presses. The `setTimeout()` function executes `playHumanTurn(roundCount)` one second
- * after the last pad in the sequence is activated. The total duration of the sequence corresponds
- * to the current round (roundCount) multiplied by 600ms which is the duration for each pad in the
- * sequence.
- */
+
 function playComputerTurn() {
   // 1. Add the "unclickable" class to padContainer
   padContainer.classList.add('unclickable');
 
   // 2. Update the status message
-  status.textContent = "The computer's turn...";
+  statusSpan.textContent = "The computer's turn...";
 
   // 3. Update the heading with the round information
   heading.textContent = `Round ${roundCount} of ${maxRoundCount}`;
 
-  // 4. Push a randomly selected color into the computerSequence array
-  const randomColor = colors[Math.floor(Math.random() * colors.length)];
-  computerSequence.push(randomColor);
+  // 4. Push a randomly selected pad into the computerSequence array
+const randomPad = pads[Math.floor(Math.random() * pads.length)];
+computerSequence.push(randomPad.color);
 
   // 5. Call activatePads(computerSequence) to light up each pad
   activatePads(computerSequence);
@@ -289,7 +240,12 @@ function playComputerTurn() {
  * 2. Display a status message showing the player how many presses are left in the round
  */
 function playHumanTurn() {
-  // TODO: Write your code here.
+  // 1. Remove the "unclickable" class from the pad container
+  padContainer.classList.remove('unclickable');
+
+  // 2. Display a status message showing the player how many presses are left
+  const pressesLeft = computerSequence.length - humanSequence.length;
+  statusSpan.textContent = `Your turn: ${pressesLeft} press${pressesLeft === 1 ? '' : 'es'} left`;
 }
 
 /**
@@ -315,7 +271,29 @@ function playHumanTurn() {
  *
  */
 function checkPress(color) {
-  // TODO: Write your code here.
+  // Add the color variable to the end of the playerSequence array
+  playerSequence.push(color);
+
+  // Store the index of the color variable
+  const index = playerSequence.length - 1;
+
+  // Calculate how many presses are left in the round
+  const remainingPresses = computerSequence.length - playerSequence.length;
+
+  // Set the status to let the player know how many presses are left in the round
+  // Assuming you have a function or a way to update the status on the UI
+  updateStatus(`Presses remaining: ${remainingPresses}`);
+
+  // Check whether the elements at the index position match
+  if (computerSequence[index] !== playerSequence[index]) {
+    resetGame('Oops! Wrong sequence. Try again.');
+    return; // Exit the function
+  }
+
+  // If there are no presses left, it means the round is over
+  if (remainingPresses === 0) {
+    checkRound();
+  }
 }
 
 /**
