@@ -1,14 +1,14 @@
 /**
  * DOM SELECTORS
  */
-console.log(document);
 
+ 
+ // TODO: Add the missing query selectors:
  const startButton = document.querySelector(".js-start-button");
- // Here I added the missing query selectors as required in order to select the status, heading and pad container elements:
+const statusSpan = document.querySelector(".js-status"); // Selects the status element
+const heading = document.querySelector(".js-heading"); // Selects the heading element
+const padContainer = document.querySelector(".js-pad-container"); // Selects the pad container element
 
- const statusSpan = document.querySelector('.statusSpan'); // Use querySelector() to get the status element
- const heading = document.querySelector("h1"); // I am using querySelector() to get the heading element
- const padContainer = document.querySelector('.padContainer');  // I'm using querySelector() to get the heading element
 
 /**
  * VARIABLES
@@ -18,20 +18,6 @@ let playerSequence = []; // track the player-generated sequence of pad presses
 let maxRoundCount = 0; // the max number of rounds, varies with the chosen level
 let roundCount = 0; // track the number of rounds that have been played so far
 
-/**
- *
- * The `pads` array contains an array of pad objects.
- *
- * Each pad object contains the data related to a pad: `color`, `sound`, and `selector`.
- * - The `color` property is set to the color of the pad (e.g., "red", "blue").
- * - The `selector` property is set to the DOM selector for the pad.
- * - The `sound` property is set to an audio file using the Audio() constructor.
- *
- * Audio file for the green pad: "../assets/simon-says-sound-2.mp3"
- * Audio file for the blue pad: "../assets/simon-says-sound-3.mp3"
- * Audio file for the yellow pad: "../assets/simon-says-sound-4.mp3"
- *
- */
 
  const pads = [
   {
@@ -39,19 +25,17 @@ let roundCount = 0; // track the number of rounds that have been played so far
     selector: document.querySelector(".js-pad-red"),
     sound: new Audio("../assets/simon-says-sound-1.mp3"),
   },
-  //  Adding the objects for the green, blue, and yellow pads.
+  // Added the objects for the green, blue, and yellow pads. Use object for the red pad above as an example.
   {
     color: "green",
     selector: document.querySelector(".js-pad-green"),
     sound: new Audio("../assets/simon-says-sound-2.mp3"),
   },
-
   {
     color: "blue",
     selector: document.querySelector(".js-pad-blue"),
     sound: new Audio("../assets/simon-says-sound-3.mp3"),
   },
-
   {
     color: "yellow",
     selector: document.querySelector(".js-pad-yellow"),
@@ -63,9 +47,6 @@ let roundCount = 0; // track the number of rounds that have been played so far
  * EVENT LISTENERS
  */
 
-const startButton = document.querySelector("#startButton");
-
-startButton.addEventListener('click', startButtonHandler); 
 padContainer.addEventListener("click", padHandler);
 // TODO: Add an event listener `startButtonHandler()` to startButton.
 
@@ -87,32 +68,35 @@ padContainer.addEventListener("click", padHandler);
  * 5. Call `playComputerTurn()` to start the game with the computer going first.
  *
  */
+// Now, let's define the startButtonHandler function:
 function startButtonHandler() {
-  // Assuming setLevel, playComputerTurn, and other necessary variables and functions are defined elsewhere.
+  // Call setLevel() to set the level of the game
+  const roundsNeededToWin = setLevel(); // You can pass the level parameter if you have a way to get it from the user
 
-  // 1. Call setLevel() to set the level of the game
-  // Assuming setLevel() has been defined according to previous instructions.
-  const level = setLevel(); // or setLevel(desiredLevel) if you want to pass a specific level
+  // Check if setLevel returned an error message and handle it
+  if (typeof roundsNeededToWin === 'string') {
+    alert(roundsNeededToWin); // Alert the user or handle the error as appropriate for your game
+    return; // Exit the function to prevent further execution
+  }
 
-  // 2. Increment the roundCount from 0 to 1
-  let roundCount = 1; // Initialize roundCount to 1 to start the game
+  // Increment the roundCount from 0 to 1
+  let roundCount = 1;
 
-  // 3. Hide the start button by adding the `.hidden` class to the start button
-  const startButton = document.getElementById('startButton'); // Replace 'startButton' with the actual ID of your start button
+  // Hide the start button by adding the 'hidden' class to the start button
   startButton.classList.add('hidden');
 
-  // 4. Unhide the status element, which displays the status messages, by removing the `.hidden` class
-  const statusSpan = document.getElementById('statusSpan'); // Replace 'statusSpan' with the actual ID of your status element
+  // Unhide the status span by removing the 'hidden' class
   statusSpan.classList.remove('hidden');
 
-  // 5. Call `playComputerTurn()` to start the game with the computer going first.
+  // Call playComputerTurn() to start the game with the computer going first
   playComputerTurn();
 
-  // Return the startButton and statusSpan elements if needed elsewhere
+  // Return the elements for further use if needed
   return { startButton, statusSpan };
 }
 
-  
+// Add the event listener to the start button outside of the startButtonHandler function
+startButton.addEventListener("click", startButtonHandler);
 
 /**
  * Called when one of the pads is clicked.
@@ -139,56 +123,19 @@ function padHandler(event) {
   return color;
 }
 
-/**
- * HELPER FUNCTIONS
- */
-
-/**
- * Sets the level of the game given a `level` parameter.
- * Returns the length of the sequence for a valid `level` parameter (1 - 4) or an error message otherwise.
- *
- * Each skill level will require the player to complete a different number of rounds, as follows:
- * Skill level 1: 8 rounds
- * Skill level 2: 14 rounds
- * Skill level 3: 20 rounds
- * Skill level 4: 31 rounds
- *
- *
- * Example:
- * setLevel() //> returns 8
- * setLevel(1) //> returns 8
- * setLevel(2) //> returns 14
- * setLevel(3) //> returns 20
- * setLevel(4) //> returns 31
- * setLevel(5) //> returns "Please enter level 1, 2, 3, or 4";
- * setLevel(8) //> returns "Please enter level 1, 2, 3, or 4";
- *
- */
 function setLevel(level = 1) {
-  // This is where I implemented the setLevel function given a 'level' parameter.
-  function setLevel(level = 1) {
-    const levelToRoundsMap = {
-      1: 8,
-      2: 14,
-      3: 20,
-      4: 31
-    };
-  
-    if (levelToRoundsMap.hasOwnProperty(level)) {
-      return levelToRoundsMap[level];
-    } else {
+  switch (level) {
+    case 1:
+      return 8;
+    case 2:
+      return 14;
+    case 3:
+      return 20;
+    case 4:
+      return 31;
+    default:
       return "Please enter level 1, 2, 3, or 4";
-    }
   }
-  
-  // Example usage:
-  console.log(setLevel());    //> returns 8
-  console.log(setLevel(1));   //> returns 8
-  console.log(setLevel(2));   //> returns 14
-  console.log(setLevel(3));   //> returns 20
-  console.log(setLevel(4));   //> returns 31
-  console.log(setLevel(5));   //> returns "Please enter level 1, 2, 3, or 4"
-  console.log(setLevel(8));   //> returns "Please enter level 1, 2, 3, or 4"
 }
 
 /**
@@ -207,16 +154,19 @@ function setLevel(level = 1) {
  * getRandomItem([1, 2, 3, 4]) //> returns 1
  */
 function getRandomItem(collection) {
-  // if (collection.length === 0) return null;
-  // const randomIndex = Math.floor(Math.random() * collection.length);
-  // return collection[randomIndex];
+   if (collection.length === 0) return null;
+   const randomIndex = Math.floor(Math.random() * collection.length);
+   return collection[randomIndex];
 }
 
 /**
  * Sets the status text of a given HTML element with a given a message
  */
 function setText(element, text) {
-  // TODO: Write your code here.
+  // Set the text content of the element to the provided text
+  element.textContent = text;
+
+  // Return the element with the updated text content
   return element;
 }
 
@@ -234,7 +184,21 @@ function setText(element, text) {
  */
 
 function activatePad(color) {
-  // TODO: Write your code here.
+  // Use the .find() method to retrieve the pad from the pads array
+  const pad = pads.find(pad => pad.color === color);
+
+  if (pad) {
+    // Add the "activated" class to the selected pad
+    pad.selector.classList.add("activated");
+
+    // Play the sound associated with the pad
+    pad.sound.play();
+
+    // After 500ms, remove the "activated" class from the pad
+    setTimeout(() => {
+      pad.selector.classList.remove("activated");
+    }, 500);
+  }
 }
 
 /**
@@ -252,7 +216,19 @@ function activatePad(color) {
  */
 
 function activatePads(sequence) {
-  // TODO: Write your code here.
+  sequence.forEach((color, index) => {
+    // Calculate the delay for each pad activation
+    const delay = 600 * (index + 1);
+
+    // Use setTimeout to schedule the activation of each pad
+    setTimeout(() => {
+      activatePad(color);
+    }, delay);
+  });
+    activatePad("red");
+    activatePad("green");
+    activatePad("blue");
+    activatePad("yellow");
 }
 
 /**
@@ -278,11 +254,32 @@ function activatePads(sequence) {
  * to the current round (roundCount) multiplied by 600ms which is the duration for each pad in the
  * sequence.
  */
- function playComputerTurn() {
-  // TODO: Write your code here.
+function playComputerTurn() {
+  // 1. Add the "unclickable" class to padContainer
+  padContainer.classList.add('unclickable');
 
-  setTimeout(() => playHumanTurn(roundCount), roundCount * 600 + 1000); // 5
+  // 2. Update the status message
+  status.textContent = "The computer's turn...";
+
+  // 3. Update the heading with the round information
+  heading.textContent = `Round ${roundCount} of ${maxRoundCount}`;
+
+  // 4. Push a randomly selected color into the computerSequence array
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  computerSequence.push(randomColor);
+
+  // 5. Call activatePads(computerSequence) to light up each pad
+  activatePads(computerSequence);
+
+  // 6. Call playHumanTurn() after the computer's turn is over
+  setTimeout(() => {
+    // Remove the "unclickable" class to allow user interaction
+    padContainer.classList.remove('unclickable');
+    playHumanTurn(roundCount);
+  }, roundCount * 600 + 1000);
 }
+
+// You would call playComputerTurn() to start the computer's turn
 
 /**
  * Allows the player to play their turn.
