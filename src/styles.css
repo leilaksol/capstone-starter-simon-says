@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Microbe&display=swap');
 
 html {
-  background: url('../assets/background.png') no-repeat center center fixed;
+  background: url('../assets/Arcade\ drop.jpeg') no-repeat center center fixed;
   box-sizing: border-box;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -20,7 +20,7 @@ body {
 }
 
 main {
-  background-color: #000;
+  background-color: transparent;
   padding: 40px;
 }
 
@@ -64,16 +64,16 @@ h1 {
   grid-template-columns: 200px 200px;
   grid-gap: 5px;
   margin: 20px;
-}
+  }
 
 .pad-red {
   border-top-left-radius: 200px;
-  background-color: red;
+  background-color:#da3287;
 }
 
 .pad-red:hover,
 .pad-red:focus {
-  background-color: #ff451a;
+  background-color: #ff2975;
   transform: rotate(-5deg);
 }
 
@@ -85,24 +85,24 @@ h1 {
 
 .pad-green {
   border-top-right-radius: 200px;
-  background-color: green;
+  background-color: #ffd700;
 }
 
 .pad-green:hover,
 .pad-green:focus {
-  background-color: #8cc218;
+  background-color: #ffd319;
   transform: rotate(5deg);
 }
 
 .pad-green:active,
 .pad-green.activated {
-  background-color: #a0ea00;
+  background-color: #ffdf00;
   transform: translateY(10px);
 }
 
 .pad-yellow {
   border-bottom-right-radius: 200px;
-  background-color: yellow;
+  background-color: #ff3800;
 }
 
 .pad-yellow:hover,
@@ -113,13 +113,13 @@ h1 {
 
 .pad-yellow:active,
 .pad-yellow.activated {
-  background-color: #ffca3d;
+  background-color: #ff901f;
   transform: translateY(10px);
 }
 
 .pad-blue {
   border-bottom-left-radius: 200px;
-  background-color: blue;
+  background-color:	#00ced1;
 }
 
 .pad-blue:hover,
@@ -132,6 +132,32 @@ h1 {
 .pad-blue.activated {
   background-color: #2bbcff;
   transform: translateY(10px);
+}
+
+/* Default button style */
+.pad {
+  color: white; /* White text */
+  padding: 15px 32px; /* Padding inside the button */
+  text-align: center; /* Center the text */
+  text-decoration: none; /* No underline on text */
+  display: inline-block; /* Allow setting dimensions */
+  font-size: 16px; /* Text size */
+  margin: 4px 2px; /* Margin around the button */
+  cursor: pointer; /* Mouse cursor as pointer */
+  border: none; /* No border */
+  border-radius: 8px; /* Rounded corners */
+  transition: background-color 0.3s, transform 0.1s; /* Smooth transition for background color and transform */
+}
+
+/* Button hover state */
+.pad:hover {
+  background-color: transparent; /* Darker green background on hover */
+}
+
+/* Button active state (when clicked) */
+.pad:active {
+  background-color: #c1cac2; /* Even darker green background when active */
+  transform: translateY(2px); /* Slight push down effect */
 }
 
 .hidden {

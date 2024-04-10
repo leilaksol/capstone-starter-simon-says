@@ -17,6 +17,7 @@ let computerSequence = []; // track the computer-generated sequence of pad press
 let humanSequence = []; // track the player-generated sequence of pad presses
 let maxRoundCount = 0; // the max number of rounds, varies with the chosen level
 let roundCount = 0; // track the number of rounds that have been played so far
+let playerSequence = [];
 
 
  const pads = [
@@ -98,23 +99,7 @@ function startButtonHandler() {
 // Add the event listener to the start button outside of the startButtonHandler function
 startButton.addEventListener("click", startButtonHandler);
 
-/**
- * Called when one of the pads is clicked.
- *
- * 1. `const { color } = event.target.dataset;` extracts the value of `data-color`
- * attribute on the element that was clicked and stores it in the `color` variable
- *
- * 2. `if (!color) return;` exits the function if the `color` variable is falsy
- *
- * 3. Use the `.find()` method to retrieve the pad from the `pads` array and store it
- * in a variable called `pad`
- *
- * 4. Play the sound for the pad by calling `pad.sound.play()`
- *
- * 5. Call `checkPress(color)` to verify the player's selection
- *
- * 6. Return the `color` variable as the output
- */
+//Code for the padHandler 
 function padHandler(event) {
   const { color } = event.target.dataset;
   if (!color) return;
@@ -134,7 +119,7 @@ function padHandler(event) {
   return color;
 }
 
-function setLevel(level = 1) {
+function setLevel(level) {
   switch (level) {
     case 1:
       return 8;
@@ -148,6 +133,12 @@ function setLevel(level = 1) {
       return "Please enter level 1, 2, 3, or 4";
   }
 }
+
+// Example usage
+console.log(setLevel(1));  // Output: 8
+console.log(setLevel(3));  // Output: 20
+console.log(setLevel(5));  // Output: Please enter level 1, 2, 3, or 4
+
 
 
 function getRandomItem(collection) {
@@ -232,13 +223,6 @@ computerSequence.push(randomPad.color);
 
 // You would call playComputerTurn() to start the computer's turn
 
-/**
- * Allows the player to play their turn.
- *
- * 1. Remove the "unclickable" class from the pad container so that each pad is clickable again
- *
- * 2. Display a status message showing the player how many presses are left in the round
- */
 function playHumanTurn() {
   // 1. Remove the "unclickable" class from the pad container
   padContainer.classList.remove('unclickable');
@@ -251,25 +235,8 @@ function playHumanTurn() {
 /**
  * Checks the player's selection every time the player presses on a pad during
  * the player's turn
- *
- * 1. Add the `color` variable to the end of the `playerSequence` array
- *
- * 2. Store the index of the `color` variable in a variable called `index`
- *
- * 3. Calculate how many presses are left in the round using
- * `computerSequence.length - playerSequence.length` and store the result in
- * a variable called `remainingPresses`
- *
- * 4. Set the status to let the player know how many presses are left in the round
- *
- * 5. Check whether the elements at the `index` position in `computerSequence`
- * and `playerSequence` match. If they don't match, it means the player made
- * a wrong turn, so call `resetGame()` with a failure message and exit the function
- *
- * 6. If there are no presses left (i.e., `remainingPresses === 0`), it means the round
- * is over, so call `checkRound()` instead to check the results of the round
- *
  */
+
 function checkPress(color) {
   // Add the color variable to the end of the playerSequence array
   playerSequence.push(color);
@@ -281,9 +248,8 @@ function checkPress(color) {
   const remainingPresses = computerSequence.length - playerSequence.length;
 
   // Set the status to let the player know how many presses are left in the round
-  // Assuming you have a function or a way to update the status on the UI
-  updateStatus(`Presses remaining: ${remainingPresses}`);
-
+  // Update the text content of the statusSpan DOM element
+statusSpan.textContent = `Presses remaining: ${remainingPresses}`;
   // Check whether the elements at the index position match
   if (computerSequence[index] !== playerSequence[index]) {
     resetGame('Oops! Wrong sequence. Try again.');
@@ -298,41 +264,73 @@ function checkPress(color) {
 
 /**
  * Checks each round to see if the player has completed all the rounds of the game * or advance to the next round if the game has not finished.
- *
- * 1. If the length of the `playerSequence` array matches `maxRoundCount`, it means that
- * the player has completed all the rounds so call `resetGame()` with a success message
- *
- * 2. Else, the `roundCount` variable is incremented by 1 and the `playerSequence` array
- * is reset to an empty array.
- * - And the status text is updated to let the player know to keep playing (e.g., "Nice! Keep going!")
- * - And `playComputerTurn()` is called after 1000 ms (using setTimeout()). The delay
- * is to allow the user to see the success message. Otherwise, it will not appear at
- * all because it will get overwritten.
- *
  */
 
 function checkRound() {
-  // TODO: Write your code here.
+  if (playerSequence.length === maxRoundCount) {
+    // The player has completed all the rounds
+    resetGame('Congratulations! You have completed all the rounds!');
+  } else {
+    // Increment the round count and reset the playerSequence for the next round
+    roundCount++;
+    playerSequence = [];
+
+    // Update the status text to let the player know to keep playing
+    statusSpan.textContent = 'Nice! Keep going!'; // Corrected line
+
+    // Call playComputerTurn() after a delay to allow the user to see the success message
+    setTimeout(playComputerTurn, 1000);
+  }
 }
 
-/**
- * Resets the game. Called when either the player makes a mistake or wins the game.
- *
- * 1. Reset `computerSequence` to an empty array
- *
- * 2. Reset `playerSequence` to an empty array
- *
- * 3. Reset `roundCount` to an empty array
- */
-function resetGame(text) {
-  // TODO: Write your code here.
 
-  // Uncomment the code below:
-  // alert(text);
-  // setText(heading, "Simon Says");
-  // startButton.classList.remove("hidden");
-  // statusSpan.classList.add("hidden");
-  // padContainer.classList.add("unclickable");
+function resetGame(text) {
+ 
+   alert(text);
+   setText(heading, "Simon Says");
+   startButton.classList.remove("hidden");
+   statusSpan.classList.add("hidden");
+  padContainer.classList.add("unclickable");
+}
+
+// Game audio, will play once 'start button' is clicked 
+const audioHit = new Audio("https://github.com/gabrielsanchez/erddiagram/blob/main/hit.mp3?raw=true");
+const song = new Audio("https://github.com/gabrielsanchez/erddiagram/blob/main/molesong.mp3?raw=true");
+
+function playAudio(audioObject) {
+  audioObject.play();
+}
+
+function loopAudio(audioObject) {
+  audioObject.loop = true;
+  playAudio(audioObject);
+}
+
+function stopAudio(audioObject) {
+  audioObject.pause();
+}
+
+function play(){
+  playAudio(song);
+}
+
+// Ensure the DOM is fully loaded before attaching event listeners
+document.addEventListener('DOMContentLoaded', function() {
+  const skillLevelSelect = document.getElementById('skillLevel');
+  
+
+  skillLevelSelect.addEventListener('change', function() {
+    const selectedSkillLevel = this.value;
+    setLevel(selectedSkillLevel);
+  });
+});
+
+// Function to set the game difficulty based on the selected skill level
+function setLevel(level) {
+const sequenceLength = parseInt(level, 10);
+  
+console.log('Setting game difficulty to sequence length:', sequenceLength);
+  // ... (rest of your game logic here)
 }
 
 /**
