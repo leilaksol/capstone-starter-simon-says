@@ -5,22 +5,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./src/styles.css" />
-    <title>Simon Says</title>
+    <h1 class="js-heading"><title>Decoded</title></h1>
   </head>
   <body>
     <main>
       <!--TODO: Add the missing information in the h1 heading -->
-      <h1></h1>
+      <h1> Decoded!! </h1>
 
       <section class="game-controls">
         <!--TODO: Add the start button -->
+        <button class="start-button js-start-button", onclick="play();" >Start</button>
         <span class="status hidden js-status"></span>
       </section>
 
       <section class="pad-container unclickable js-pad-container">
         <div class="pad pad-red js-pad-red" data-color="red"></div>
         <!--TODO: Add the missing pads -->
+        <div class="pad pad-green js-pad-green" data-color="green"></div>
+        <div class="pad pad-blue js-pad-blue" data-color="blue"></div>
+        <div class="pad pad-yellow js-pad-yellow" data-color="yellow"></div>
       </section>
+      <!-- Add this snippet where you want the dropdown to appear in your HTML file -->
+<label for="setLevel">Choose a skill level:</label>
+<select id="setLevel" name="setLevel">
+  <option value="8">Skill Level 1: 8 sequences</option>
+  <option value="14">Skill Level 2: 14 sequences</option>
+  <option value="20">Skill Level 3: 20 sequences</option>
+  <option value="31">Skill Level 4: 31 sequences</option>
+</select>
     </main>
     <script src="./src/index.js"></script>
   </body>
