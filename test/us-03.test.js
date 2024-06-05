@@ -15,6 +15,17 @@ const setUpTest = async () => {
   await page.goto(baseURL, { waitUntil: "load" });
 };
 
+describe("US-03: getRandomItem()", () => {
+  beforeEach(setUpTest);
+
+  it("should return null if getRandomItem([])", async () => {
+    const randomItem = await page.evaluate(() => {
+      return window.getRandomItem([]);
+    });
+    expect(randomItem).toBeNull();
+  });
+});
+
 describe("US-03: setText()", () => {
   beforeEach(setUpTest);
 
