@@ -30,14 +30,11 @@ let roundCount = 0; // track the number of rounds that have been played so far
  * Audio file for the yellow pad: "../assets/simon-says-sound-4.mp3"
  *
  */
-
-import sound1 from "../assets/simon-says-sound-1.mp3";
-
  const pads = [
   {
     color: "red",
     selector: document.querySelector(".js-pad-red"),
-    sound: new Audio(sound1),
+    sound: new Audio("../assets/simon-says-sound-1.mp3"),
   },
   // TODO: Add the objects for the green, blue, and yellow pads. Use object for the red pad above as an example.
 ];
@@ -112,6 +109,7 @@ function padHandler(event) {
  * Skill level 3: 20 rounds
  * Skill level 4: 31 rounds
  *
+ * Set maxRoundCount accordingly
  *
  * Example:
  * setLevel() //> returns 8
