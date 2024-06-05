@@ -283,7 +283,7 @@ function checkRound() {
  *
  * 2. Reset `playerSequence` to an empty array
  *
- * 3. Reset `roundCount` to an empty array
+ * 3. Reset `roundCount` to 0
  */
 function resetGame(text) {
   // TODO: Write your code here.
